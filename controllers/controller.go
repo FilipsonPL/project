@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/FilipsonPL/project/models"
+	"github.com/FilipsonPL/project/db"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,7 +28,7 @@ func Register(c *gin.Context) {
 			Email: data["email"],
 			Password: data["password"],
 		}
-		Database.Create(&user)
+		db.Database.Create(&user)
 
 		c.JSON(http.StatusOK, gin.H{"Created user": user})
 	} else {
@@ -37,7 +38,7 @@ func Register(c *gin.Context) {
 
 func ShowUsers(c *gin.Context) {
 	var users []models.User
-	Database.Find(&users)
+	db.Database.Find(&users)
 	c.JSON(http.StatusOK,gin.H{"Users": users})
 }
 
@@ -50,11 +51,11 @@ func Unregister(c *gin.Context) {
 	}
 	var user models.User
 	if _,ok := data["id"] ; ok {
-		if err := Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
+		if err := db.Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		Database.Delete(&user)
+		db.Database.Delete(&user)
 		c.JSON(http.StatusOK,gin.H{"User deleted succesfully!",user})
 	} else {
 		c.JSON(http.StatusBadRequest,gin.H{"Error":"Missing id parameter!"})
@@ -69,7 +70,7 @@ func EditUser(c *gin.Context) {
 	}
 	var user models.User
 	if _, ok := data["id"] ; ok {
-		if err := Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
+		if err := db.Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -78,7 +79,7 @@ func EditUser(c *gin.Context) {
 				user[index] = value
 			}
 		}
-		Database.Save(&user)
+		db.Database.Save(&user)
 		c.JSON(http.StatusOK,gin.H{"Edited user":user})
 		return
 	} else {
