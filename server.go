@@ -11,10 +11,11 @@ func main() {
 
 	db.ConnectToDatabase()
 
-	ser.POST("/register",controllers.Register)
-	ser.GET("/show/users",controllers.ShowUsers)
-	ser.POST("/unregister",controllers.Unregister)
-	ser.POST("/edit/user",controllers.EditUser)
+	ser.POST("/user", controllers.CreateUser)
+	ser.GET("/user/:id", controllers.FindUser)
+	ser.GET("/users", controllers.FindUsers)
+	ser.DELETE("/user/:id", controllers.DeleteUser)
+	ser.PUT("/user/:id", controllers.UpdateUser)
 
-	ser.Run("localhost:8080")
+	ser.Run(":8080")
 }

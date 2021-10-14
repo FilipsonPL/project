@@ -4,121 +4,57 @@ import (
 	"github.com/FilipsonPL/project/models"
 	"github.com/FilipsonPL/project/db"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
-func Register(c *gin.Context) {
-	var data map[string]string
-	if err := c.BindJSON(&data); err != nil{
-		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+func CreateUser(c *gin.Context) {
+	var user_data models.CreateUserInput
+
+	if err := c.BindJSON(&user_data); err != nil{
+		c.JSON(400, gin.H{"Error": err.Error()})
 		return
 	}
-	valid := true
-	cells := []string{"name","surname","age","email","password"}
-	for _, cell := range cells {
-		if _, ok := data[cell]; !ok {
-			valid = false
-			break
-		}
-	}
-	if valid {
-		uage, _ := strconv.Atoi(data["age"])
-		user := models.User{
-			Name: 		data["name"],
-			Surname: 	data["surname"],
-			Age: 		uage,
-			Email: 		data["email"],
-			Password: 	data["password"],
-		}
-		db.Database.Create(&user)
 
-		c.JSON(http.StatusOK, gin.H{"Created user": user})
-	} else {
-		c.JSON(http.StatusBadRequest,gin.H{"Error": "Not all values passed!"})
-	}
+	user := models.User{Name:user_data.Name, Surname: user_data.Surname, Age: user_data.Age, Email: user_data.Email, Password:user_data.Password}
+	db.Database.Create(&user)
+	c.JSON(200, user)
 }
 
-func ShowUsers(c *gin.Context) {
+func FindUsers(c *gin.Context) {
 	var users []models.User
 	db.Database.Find(&users)
-	c.JSON(http.StatusOK,gin.H{"Users": users})
+	c.JSON(200,gin.H{"Users": users})
 }
 
-func Unregister(c *gin.Context) {
-	var data map[string]string
+func FindUser(c *gin.Context) {
+	var user models.User
+	if err := db.Database.Where("id = ?").First(&user).Error; err != nil{
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200,gin.H{"User": user})
+}
 
-	if err := c.BindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest,gin.H{"Error":err.Error()})
+func DeleteUser(c *gin.Context) {
+	var user models.User
+	if err := db.Database.Where("id = ?",c.Param("id")).First(&user).Error; err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	db.Database.Delete(&user)
+	c.JSON(200,gin.H{"User deleted succesfully!":user})
+}
+
+func UpdateUser(c *gin.Context) {
+	var user_data models.UpdateUser
+	if err := c.BindJSON(&user_data); err != nil {
+		c.JSON(400,gin.H{"Error":err.Error()})
 		return
 	}
 	var user models.User
-	if _,ok := data["id"] ; ok {
-		if err := db.Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		db.Database.Delete(&user)
-		c.JSON(http.StatusOK,gin.H{"User deleted succesfully!":user})
-	} else {
-		c.JSON(http.StatusBadRequest,gin.H{"Error":"Missing id parameter!"})
+	if err := db.Database.Where("id = ?",c.Param("id")).First(&user).Error; err != nil {
+		c.JSON(400, gin.H{"Error": err.Error()})
+		return
 	}
+	db.Database.Model(&user).Updates(&user_data)
+	c.JSON(200,gin.H{"Edited user":user})
 }
-
-func EditUser(c *gin.Context) {
-	var data map[string]string
-	if err := c.BindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest,gin.H{"Error":err.Error()})
-		return
-	}
-	var user models.User
-	if _, ok := data["id"] ; ok {
-		if err := db.Database.Where("id = ?",data["id"]).First(&user).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
-			return
-		}
-		for index, value := range data {
-			if index=="name" {
-				user.Name = value
-			} else if index=="surname"{
-				user.Surname = value
-			} else if index=="age" {
-				uage, _ := strconv.Atoi(value)
-				user.Age = uage
-			} else if index=="email"{
-				user.Email = value
-			} else if index=="password"{
-				user.Password = value
-			}
-		}
-		db.Database.Save(&user)
-		c.JSON(http.StatusOK,gin.H{"Edited user":user})
-		return
-	} else {
-		c.JSON(http.StatusBadRequest,gin.H{"Error":"Missing id parameter!"})
-		return
-	}
-}
-/*
-func LoginUser(c *gin.Context) {
-	var data map[string]string
-	if err := c.BindJSON(&data); err {
-		c.JSON(http.StatusBadRequest,gin.H{"Error":err.Error()})
-		return
-	}
-	var user User
-	if err := db.Database.Where("email = ?",data["email"]).First(&user).Error ; err {
-		c.JSON(http.StatusBadRequest,gin.H{"Error": "Wrong email!"})
-		return
-	}
-	if user.Password == data["password"] {
-		c.JSON(http.StatusOK,gin.H{"Status": "Logged!"})
-	} else {
-		c.JSON(http.StatusBadRequest,gin.H{"Error": "Wrong email!"})
-	}
-}
-
-func Logout(c *gin.Context) {
-	
-}
-*/
