@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student managment center</title>
+<meta charset="utf-8">
+</head>
+
+<body>
+
+<button id="su">Show users</button>
+
+<div id="data">
+
+</div>
+
+<script>
+
+/*
+
+<button id="eu">Edit User</button>
+<button id="cu">Create User</button><button id="de">Delete User</button>
+
+*/
+
+let d = document.getElementById("data");
+
+function writeData(json)
+{
+    console.log(json);
+}
+
+document.getElementById("su").addEventListener("click",
+
+function (){
+    let request = new XMLHttpRequest();
+    request.onload = function () {
+        console.log(request);
+        if(request.status==200)
+        {
+            let json = JSON.parse(request.responseText);
+            writeData(json);
+        }
+        else
+        {
+            div.innerHTML="Error";
+        }
+    }
+    request.open('GET','localhost:8080/users',true);
+    request.send();
+}
+
+);
+
+/*
+document.getElementById("cu").addEventListener("click",
+
+function (){
+
+}
+
+);
+
+document.getElementById("eu").addEventListener("click",
+
+function (){
+
+}
+
+);
+
+document.getElementById("de").addEventListener("click",
+
+function (){
+
+}
+
+);
+*/
+
+</script>
+
+</body>
+
+</html>
