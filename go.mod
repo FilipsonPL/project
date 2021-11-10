@@ -1,4 +1,4 @@
-module StudentPage
+module github.com/FilipsonPL/project
 
 go 1.17
 
