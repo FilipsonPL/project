@@ -1,4 +1,4 @@
-
+/*
 package urls
 
 import(
@@ -12,4 +12,4 @@ func SetUrls(server *Engine) {
 	server.GET("/users", controllers.FindUsers)
 	server.DELETE("/user/:id", controllers.DeleteUser)
 	server.PUT("/user/:id", controllers.UpdateUser)
-}
+}*/

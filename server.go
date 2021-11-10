@@ -10,13 +10,12 @@ func main() {
 	ser := gin.Default()
 
 	db.ConnectToDatabase()
-	urls.SetUrls(ser)
-	
-	/*ser.POST("/user", controllers.CreateUser)
+
+	ser.POST("/user", controllers.CreateUser)
 	ser.GET("/user/:id", controllers.FindUser)
 	ser.GET("/users", controllers.FindUsers)
 	ser.DELETE("/user/:id", controllers.DeleteUser)
-	ser.PUT("/user/:id", controllers.UpdateUser)*/
+	ser.PUT("/user/:id", controllers.UpdateUser)
 
 	ser.Run(":8080")
 }
