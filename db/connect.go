@@ -1,3 +1,4 @@
+
 package db
 
 import (
@@ -9,11 +10,13 @@ import (
 var Database *gorm.DB
 
 func ConnectToDatabase() {
-	Database, err := gorm.Open(sqlite.Open("students.db"), &gorm.Config{})
+	connection, err := gorm.Open(sqlite.Open("students.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
 
-	Database.AutoMigrate(&models.User{})
+	connection.AutoMigrate(&models.User{})
+	Database = connection
 }
+

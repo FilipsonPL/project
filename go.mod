@@ -1,4 +1,4 @@
-module github.com/FilipsonPL/project
+module StudentPage
 
 go 1.17
 
@@ -25,6 +25,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
-	gorm.io/driver/sqlite v1.1.6 // indirect
-	gorm.io/gorm v1.21.15 // indirect
+	gorm.io/driver/sqlite v1.1.4 // indirect
+	gorm.io/gorm v1.21.13 // indirect
 )

@@ -6,6 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+
+w folderze models zrobić plik do wysyłania danych do bazy danych
+
+zrobić mappings dla ulr'ów
+
+branch
+
+*/
+
 func CreateUser(c *gin.Context) {
 	var user_data models.CreateUserInput
 
